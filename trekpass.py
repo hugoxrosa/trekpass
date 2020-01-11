@@ -3,7 +3,7 @@
 
 import random
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 GREEK_ALPHABET = [
     'Alpha',
@@ -137,13 +137,39 @@ OFFICER_NAMES = [
 NUMBERS = '0 1 2 3 4 5 6 7 8 9 0'.split()
 
 
+class ComAuthCode:
+    """
+    """
+    GRP_0 = GREEK_ALPHABET + PHONETIC_ALPHABET + OFFICER_NAMES + COLOR_NAME + NUMBERS
+    GRP_1 = GREEK_ALPHABET + PHONETIC_ALPHABET + COLOR_NAME + NUMBERS*10
+
+    def __init__(self, numwords=6, delimiter='-', case='first'):
+        "docstring"
+        self.numwords = numwords
+        self.delimiter = delimiter
+        self.case = case
+
+    def generate_code(self, numwords=None):
+        if numwords is None:
+            numwords = self.numwords
+
+        if len(numwords) == 2:
+            min, max = numwords
+            numwords = random.randrange(5, 9)
+
+        numwords = int(numwords)
+
+        self.terms = [random.choice(self.GRP_0)]
+        self.terms[1:] = random.sample(self.GRP_1, k=numwords-1)
+
+    def __str__(self):
+        return self.delimiter.join(self.terms)
+
+
 def main():
-    grp0 = GREEK_ALPHABET + PHONETIC_ALPHABET + OFFICER_NAMES + COLOR_NAME + NUMBERS
-    grp1 = GREEK_ALPHABET + PHONETIC_ALPHABET + COLOR_NAME + NUMBERS*10
-    sizepass = random.randrange(5, 9)
-    passlist = [random.choice(grp0)]
-    passlist[1:] = random.sample(grp1, k=sizepass-1)
-    print('-'.join(passlist))
+    command_code = ComAuthCode(numwords=(5, 9))
+    command_code.generate_code()
+    print(command_code)
 
 
 if __name__ == '__main__':
